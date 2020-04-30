@@ -25,7 +25,7 @@ class Contact extends Component {
         var confirm = document.getElementById('confirm');
 
         if(name!=''&&format.test(gmail)&&message!=''){
-            fetch('http://localhost:8080/contact',{
+            fetch('https://apiserver17521296.herokuapp.com/contact',{
             method: 'POST',
             headers: {
                 Accept: 'application/json',
