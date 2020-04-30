@@ -16,9 +16,16 @@ class Contact extends Component {
         const value = event.target.value;
         this.setState({[name]:value});
     };
-
     Submit = () => {
-        fetch('https://apiserver17521296.herokuapp.com/contact',{
+        let submit=false;
+        var name = document.getElementById('fname').value;
+        var gmail = document.getElementById('gmail').value;
+        var message = document.getElementById('message').value;
+        let format = /^[a-zA-Z0-9]*\@[a-zA-Z0-9]*\.[a-zA-Z0-9]*$/;
+        var confirm = document.getElementById('confirm');
+
+        if(name!=''&&format.test(gmail)&&message!=''){
+            fetch('http://localhost:8080/contact',{
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -31,17 +38,37 @@ class Contact extends Component {
             })
         }).then((res) => res.json())
             .then((json)=> {
-                this.setState({submitted:true, submitResult:true});
+                this.setState({submitResult:true});
+                submit=true;
             })
             .catch((error) => {
-                this.setState({submitted:true, submitResult:false});
+                this.setState({submitResult:false});
             });
+            
+            confirm.innerHTML='Cảm ơn vì đã liên lạc với chúng tôi';
+            confirm.style.background="green";
+            confirm.style.color="white";
+        }
+        else if(name!=''&&!format.test(gmail)&&message!=''){
+            confirm.innerHTML='Vui lòng điền đúng format của gmail (@)';      
+            confirm.style.background="red";
+            confirm.style.color="white";
+        }
+        else{
+            confirm.innerHTML='Vui lòng điền đầy đủ thông tin';      
+            confirm.style.background="red";
+            confirm.style.color="white";
+        }
+        document.getElementById('fname').value='';
+        document.getElementById('gmail').value='';
+        document.getElementById('message').value='';
     };
 
     render() {
         return (
             <div className="Contact">
                 <h2 className="ContactTitle">Contact</h2>
+                <span id="confirm"></span>
                 <form onClick={this.handleSubmit}>
                     <label htmlFor="fname">Tên :</label>
                     <input type="text" id="fname" name="name" onChange={this.changeHandler} placeholder="Your name.." required/><br></br>
